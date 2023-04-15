@@ -11,12 +11,12 @@ def objective(x, coeffs):
     return coeffs.dot([x**i for i in range(len(coeffs))])
 
 # simulated annealing algorithm
-def simulated_annealing(objective, bounds, n_iterations, step_size, temp):
+def simulated_annealing(objective, coeffs, bounds, n_iterations, step_size, temp):
     # generate an initial point
     best = None
     for i in range(100):
         x = bounds[:, 0] + rand(len(bounds)) * (bounds[:, 1] - bounds[:, 0])
-        score = objective(x)
+        score = objective(x, coeffs)
         if best is None or score < best[1]:
             best = [x, score]
     # run the algorithm
@@ -29,7 +29,7 @@ def simulated_annealing(objective, bounds, n_iterations, step_size, temp):
         while candidate is None or any(candidate < bounds[:, 0]) or any(candidate > bounds[:, 1]):
             candidate = current[0] + rand(len(bounds)) * step_size - step_size / 2.0
         # evaluate candidate point
-        candidate_score = objective(candidate)
+        candidate_score = objective(candidate, coeffs)
         scores.append(candidate_score)
         solutions.append(candidate)
         # check if we should keep it
@@ -52,7 +52,7 @@ step_size = 0.1
 temp = 10
 
 # solve the problem using simulated annealing
-best, score = simulated_annealing(objective, bounds, n_iterations, step_size, temp)
+best, score = simulated_annealing(objective = objective, coeffs = coeffs, bounds = bounds, n_iterations = n_iterations, step_size = step_size, temp = temp)
 
 # report solution
 print('f(%s) = %f' % (best, score))
